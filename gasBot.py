@@ -3,7 +3,7 @@ from bs4 import BeautifulSoup
 from selenium import webdriver
 from os import system
 
-TOKEN = 'OTc5NjExNTc0NzgyMjc1NTg0.GVu3cy.E8l1-Q_j5PXXAAbapsA4K2uqoIbI8iDc30Rj3U'
+TOKEN = 'OTc5NjExNTc0NzgyMjc1NTg0.G5FP5S.OCTm86ktVcYxb8fBz7JTgYtlRJDk0RJmL4jOlA'
 
 client = discord.Client()
 
