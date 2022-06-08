@@ -23,9 +23,14 @@ class gasBotCommands(commands.Cog):
         await ctx.channel.send(text)
 
     @commands.command()
-    async def city(self, ctx, searchstring):
-        info = gasByCity(searchstring)
+    async def city(self, ctx, *searchstring):
+        info = gasByCity(tupleToString(*searchstring))
         await ctx.channel.send(info)
+
+def tupleToString(*tuple):
+    delimiter = '-'
+    string = str(delimiter.join(tuple))
+    return stringgasBot
 
 def gasChangeTomorrow():
     chromepath = r"C:\Users\Alexei\Downloads\chromedriver_win32\chromedriver.exe"
