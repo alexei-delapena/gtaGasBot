@@ -1,16 +1,35 @@
 import discord
+from discord.ext import commands
 from bs4 import BeautifulSoup
 from selenium import webdriver
-from os import system
 
-TOKEN = 'OTc5NjExNTc0NzgyMjc1NTg0.GaNyi6.MsHlPFPBPjThZGXW4W2rBtp6YC8cczpyb7mEag'
 
-client = discord.Client()
+class gasBotCommands(commands.Cog):
 
-chromepath = r"C:\Users\Alexei\Downloads\chromedriver_win32\chromedriver.exe"
-driver = webdriver.Chrome(chromepath)
+    def __init__(self, client):
+        self.client = client
+
+    @commands.command()
+    async def on_ready(self):
+        print("Gas Bot online!")
+
+    @commands.command()
+    async def leave(self, ctx):
+        await ctx.channel.disconnect()
+
+    @commands.command()
+    async def tomorrow(self, ctx):
+        text = gasChangeTomorrow()
+        await ctx.channel.send(text)
+
+    @commands.command()
+    async def city(self, ctx, searchstring):
+        info = gasByCity(searchstring)
+        await ctx.channel.send(info)
 
 def gasChangeTomorrow():
+    chromepath = r"C:\Users\Alexei\Downloads\chromedriver_win32\chromedriver.exe"
+    driver = webdriver.Chrome(chromepath)
     url = "https://toronto.citynews.ca/toronto-gta-gas-prices/"
     driver.get(url)
     html = driver.page_source
@@ -19,11 +38,12 @@ def gasChangeTomorrow():
     return results
 
 def gasByCity(city):
+    text = ''
     chromepath = r"C:\Users\Alexei\Downloads\chromedriver_win32\chromedriver.exe"
     driver = webdriver.Chrome(chromepath)
     url = "https://www.gasbuddy.com/gasprices/ontario/"
-    cityURL = url + city + "/"
-    driver.get(cityURL)
+    cityurl = url + city + "/"
+    driver.get(cityurl)
     html = driver.page_source
     soup = BeautifulSoup(html, "html.parser")
     station_elements = soup.find_all('div', attrs={'class' : 'GenericStationListItem-module__stationListItem___3Jmn4'})
@@ -34,31 +54,9 @@ def gasByCity(city):
         for br in address('br'):
             br.replace_with('\n')
         price = station_element.find('span', attrs={'class' : 'text__xl___2MXGo text__left___1iOw3 StationDisplayPrice-module__price___3rARL'}).text
-        print(name)
-        print(address.text)
-        print(price + '\n')
+        text = text + str(name) + '\n' + str(address.text) + '\n' + str(price) + '\n\n'
 
-text = gasChangeTomorrow()
+    return text
 
-@client.event
-async def on_ready():
-    print("Gas Bot online!")
-
-
-@client.event
-async def on_message(message):
-    if message.author == client.user:
-        return
-
-    if message.content.startswith("gas"):
-        await message.channel.send(text)
-
-    else:
-        await message.channel.send("Invalid call. Type gas to get the next gas price.")
-
-
-try:
-    client.run(TOKEN)
-except discord.errors.HTTPException:
-    print("\n\n\nBLOCKED BY RATE LIMITS\nRESTARTING NOW\n\n\n")
-    system('kill 1')
+def setup(client):
+    client.add_cog(gasBotCommands(client))
