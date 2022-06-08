@@ -30,7 +30,7 @@ class gasBotCommands(commands.Cog):
 def tupleToString(*tuple):
     delimiter = '-'
     string = str(delimiter.join(tuple))
-    return stringgasBot
+    return string
 
 def gasChangeTomorrow():
     chromepath = r"C:\Users\Alexei\Downloads\chromedriver_win32\chromedriver.exe"
